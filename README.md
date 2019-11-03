@@ -16,3 +16,5 @@
 1. https://nextjournal.com/gkoehler/pytorch-mnist
 
 2. https://github.com/hunkim/PyTorchZeroToAll/tree/master/slides
+
+3. https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html
