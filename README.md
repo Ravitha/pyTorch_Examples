@@ -8,6 +8,7 @@
 | 4 | Logistic Regression | Implementation of logistic regression model with sigmoid activation and cross entropy loss |
 | 5 | Reading from Dataset | Reading input from text file and train the logistic regression model |
 | 6 | MNIST Classification | Implementation of LeNet-5 using MNIST Classification |
+| 7 | Inference using Pretrained Models on ImageNet | Suppoting_Files : dog.jpeg and class.json |
 
 
 
