@@ -1,10 +1,17 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
+'''
+Declaring the Sample data points
+and fixing the value of w
+'''
 x_data =[1.0,2.0,3.0]
 y_data =[2.0,3.0,4.0]
 w = 1.0
 
+'''
+Transforms the input into output
+'''
 def forward(x):
 	return w*x
 
