@@ -15,10 +15,15 @@ Transforms the input into output
 def forward(x):
 	return w*x
 
+'''
+Understand the efficacy of the model
+'''
 def loss(x,y):
 	y_pred = forward(x)
 	return (y_pred-y) * (y_pred - y)
 
+'''
+For each input data, 
 mse_list = []
 w_list = []
 for w in np.arange(0.0,4.1,0.1):
