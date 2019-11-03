@@ -10,3 +10,7 @@
 
 
 
+# References:
+1. https://nextjournal.com/gkoehler/pytorch-mnist
+
+2. https://github.com/hunkim/PyTorchZeroToAll/tree/master/slides
