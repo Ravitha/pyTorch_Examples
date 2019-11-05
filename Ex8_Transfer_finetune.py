@@ -1,6 +1,14 @@
 
 """
 Author : Ravitha
+Refer to the link https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html for more information
+
+1. ResNet18 model is created
+2. The model parameters are initialized using pretrained weights
+3. Last fully connected layer is modified to contain two nodes (two classes)
+4. The modified model is fine tuned for new application using SGD
+5. The model state which provides better validation accuracy is tracked.
+6. Finally, the model state is stored in '.pth' file
 
 """
 
