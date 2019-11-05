@@ -9,6 +9,7 @@
 | 5 | Reading from Dataset | Reading input from text file and train the logistic regression model |
 | 6 | MNIST Classification | Implementation of LeNet-5 using MNIST Classification |
 | 7 | Inference using Pretrained Models on ImageNet | Suppoting_Files : dog.jpeg and class.json |
+| 8 | Transfer Learning - Finetuning network for custom dataset | Download [Dataset] (https://download.pytorch.org/tutorial/hymenoptera_data.zip) |
 
 
 
