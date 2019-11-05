@@ -10,6 +10,7 @@
 | 6 | MNIST Classification | Implementation of LeNet-5 using MNIST Classification |
 | 7 | Inference using Pretrained Models on ImageNet | Suppoting_Files : dog.jpeg and class.json |
 | 8 | Transfer Learning - Finetuning network for custom dataset | Download [Dataset] (https://download.pytorch.org/tutorial/hymenoptera_data.zip) |
+| 9 | Transfer Learning - Feature Extractor | Trains only the newly added layers |
 
 
 
@@ -18,4 +19,5 @@
 2. https://github.com/hunkim/PyTorchZeroToAll/tree/master/slides
 3. https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html
 4. https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html
+5. https://github.com/utkuozbulak/pytorch-cnn-visualizations
 
