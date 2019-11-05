@@ -107,8 +107,8 @@ def main():
 	dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=4, shuffle=True)
 	testloader = torch.utils.data.DataLoader(valid_dataset, batch_size=4, shuffle=True)
 	weights = train_model(model, Criterion, optimizer, dataloader, testloader)
-	torch.save({'model_state_dict':model_ft.state_dict(),
-                'optim_state_dict':optimizer_ft.state_dict()},'resnet18_classification_weights.pth')
+	torch.save({'model_state_dict':model.state_dict(),
+                'optim_state_dict':optimizer.state_dict()},'resnet18_classification_weights.pth')
 
 if __name__ == "__main__":
     main()
