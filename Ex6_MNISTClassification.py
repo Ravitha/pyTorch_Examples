@@ -31,7 +31,7 @@ class NN(torch.nn.Module):
 		f  = (torch.nn.Flatten()(s2))
 		f1 = F.relu(self.linear1(f))
 		f2 = F.relu(self.linear2(f1))
-		f3 = F.log_softmax(self.linear3(f2))
+		f3 = self.linear3(f2)
 		return f3
 
 def test_data(testLoader, Criterion, device, model):
@@ -109,7 +109,7 @@ model = NN().to(device)
 #Summarize the model
 summary(model,(1,28,28))
 #Create Optimizer and Loss Function
-Criterion = torch.nn.CrossEntropyLoss(size_average=True)
+Criterion = torch.nn.CrossEntropyLoss(size_average=True) # It computes log softmax and negative log likelihood 
 optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 #Get Loaders
 trainLoader,testLoader = loaders()
