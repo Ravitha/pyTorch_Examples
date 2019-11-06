@@ -11,6 +11,7 @@
 | 7 | Inference using Pretrained Models on ImageNet | Suppoting_Files : dog.jpeg and class.json |
 | 8 | Transfer Learning - Finetuning network for custom dataset | Download [Dataset] (https://download.pytorch.org/tutorial/hymenoptera_data.zip) |
 | 9 | Transfer Learning - Feature Extractor | Trains only the newly added layers |
+| 10 | Intrepreting decision of CNN using Class Activation Maps | Uses hooks to retrieve the ouput of intermediate layer|
 
 
 
@@ -20,4 +21,5 @@
 3. https://pytorch.org/tutorials/beginner/finetuning_torchvision_models_tutorial.html
 4. https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html
 5. https://github.com/utkuozbulak/pytorch-cnn-visualizations
+6. https://github.com/metalbubble/CAM/blob/master/pytorch_CAM.py
 
