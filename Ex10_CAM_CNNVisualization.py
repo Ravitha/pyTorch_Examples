@@ -1,6 +1,7 @@
 import cv2
 import torch
 import numpy as np
+import argparse
 from torch.nn import functional as F
 from torchvision import models,transforms
 from torch.autograd import Variable
@@ -59,12 +60,18 @@ def generate_cam(features, weights, class_id):
 	return cam_img
 
 
+def main():
+	parser = argparse.ArgumentParser(description='Create Class Activation Maps')
+	parser.add_argument('--image_path', default='./Images/dog_cat.jpeg')
+	args = parser.parse_args()
+	Image_path = args.image_path
+	img, Tensor = preprocess_Image(Image_path)
+	feature, probs, idx, weights = retrieve_features_classes(Tensor, 'layer4')
+	print('Majority class : {0}',idx[0])
+	cam_img = generate_cam(feature, weights, idx[0])
+	plt.imshow(img)
+	plt.imshow(cam_img, cmap='jet', alpha = 0.5)
+	plt.show()
 
-Image_path ='./Images/dog_cat.jpeg'
-img, Tensor = preprocess_Image(Image_path)
-feature, probs, idx, weights = retrieve_features_classes(Tensor, 'layer4')
-print('Majority class : {0}',idx[0])
-cam_img = generate_cam(feature, weights, idx[0])
-plt.imshow(img)
-plt.imshow(cam_img, cmap='jet', alpha = 0.5)
-plt.show()
+if __name__ == "__main__":
+	main()
