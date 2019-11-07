@@ -22,4 +22,4 @@
 4. https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html
 5. https://github.com/utkuozbulak/pytorch-cnn-visualizations
 6. https://github.com/metalbubble/CAM/blob/master/pytorch_CAM.py
-
+7. https://theailearner.com/2019/01/21/capsule-networks/
