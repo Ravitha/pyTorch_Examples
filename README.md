@@ -23,3 +23,5 @@
 5. https://github.com/utkuozbulak/pytorch-cnn-visualizations
 6. https://github.com/metalbubble/CAM/blob/master/pytorch_CAM.py
 7. https://theailearner.com/2019/01/21/capsule-networks/
+8. https://colab.research.google.com/github/pytorch/vision/blob/temp-tutorial/tutorials/torchvision_finetuning_instance_segmentation.ipynb
+9. https://www.learnopencv.com/pytorch-for-beginners-semantic-segmentation-using-torchvision/
