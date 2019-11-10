@@ -25,3 +25,5 @@
 7. https://theailearner.com/2019/01/21/capsule-networks/
 8. https://colab.research.google.com/github/pytorch/vision/blob/temp-tutorial/tutorials/torchvision_finetuning_instance_segmentation.ipynb
 9. https://www.learnopencv.com/pytorch-for-beginners-semantic-segmentation-using-torchvision/
+10. https://github.com/usuyama/pytorch-unet
+11. http://www.pabloruizruiz10.com/resources/CNNs/ResNet-PyTorch.html
