@@ -13,6 +13,11 @@
 | 9 | Transfer Learning - Feature Extractor | Trains only the newly added layers |
 | 10 | Intrepreting decision of CNN using Class Activation Maps | Uses hooks to retrieve the ouput of intermediate layer|
 
+# Segmentation Architectures:
+| S.No | Experiment | Description |
+| ---------- | ---------- | ----------------- |
+|1| FCN implementation |Custom U-net Developed on random;y generated images (https://github.com/usuyama/pytorch-unet/blob/master/pytorch_fcn.ipynb)|
+
 
 
 # References:
