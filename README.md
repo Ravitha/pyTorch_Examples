@@ -16,7 +16,7 @@
 # Segmentation Architectures:
 | S.No | Experiment | Description |
 | ---------- | ---------- | ----------------- |
-|1| FCN implementation |Custom U-net Developed on randomly generated images (https://github.com/usuyama/pytorch-unet/blob/master/pytorch_fcn.ipynb)|
+|1| FCN implementation |Custom U-net Developed on TNSC Dataset (https://github.com/usuyama/pytorch-unet/blob/master/pytorch_fcn.ipynb)|
 
 
 
