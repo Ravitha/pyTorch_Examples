@@ -3,6 +3,7 @@ from skimage.transform import resize
 from collections import defaultdict
 from torchvision import models
 import torch.optim as optim
+from torch.optim import lr_scheduler
 import torch.nn.functional as F
 import torch.nn as nn
 import os
@@ -20,7 +21,7 @@ Each dimension has a grayscale intendity between 0 and 255
 Masks are of dimension 512 * 512 
 Nuclei has pixel intensity of 255 and background has an intensity zero
 '''
-num_Epochs = 10
+num_Epochs = 100
 def trainData():
 	data_location = './Nuclei_Dataset/Image'
 	mask_location = './Nuclei_Dataset/Mask'
@@ -113,7 +114,7 @@ class FCN(torch.nn.Module):
 		self.upsample4 = nn.Upsample(scale_factor = 32, mode='bilinear')
 
 		self.conv1k = nn.Conv2d(64+128+256+512, n_class, 1)
-	
+		self.sigmoid = nn.Sigmoid()
 
 	def forward(self, x):
 		x = self.layer1(x)
@@ -126,21 +127,25 @@ class FCN(torch.nn.Module):
 		up4 = self.upsample4(x)
 		merge = torch.cat([up1,up2,up3,up4], dim=1)
 		merge = self.conv1k(merge)
+		#out = self.sigmoid(merge)
 		return merge
 
 def dice_loss(pred, target, smooth = 1.):
 	pred = pred.contiguous()
-	target = target.contiguous()    
-	intersection = (pred * target).sum(dim=2).sum(dim=2)
-	loss = (1 - ((2. * intersection + smooth) / (pred.sum(dim=2).sum(dim=2) + target.sum(dim=2).sum(dim=2) + smooth)))
+	target = target.contiguous()
+	intersection = torch.sum(pred * target)
+	loss = (1 - ((2. * intersection + smooth) / (torch.sum(pred) + torch.sum(target) + smooth)))
 	return loss.mean()
 
 
-def calc_loss(pred, target, metrics, bce_weight=0.5):
-	bce = F.binary_cross_entropy_with_logits(pred, target)
+def calc_loss(pred, target, metrics, Criterion, bce_weight=0.5):
+	#bce = Criterion(pred, target)
+	#bce = F.binary_cross_entropy_with_logits(pred, target)
 	pred = torch.sigmoid(pred)
+	bce = Criterion(pred, target)
+	#target =target.type(torch.cuda.LongTensor)
+	#bce = F.binary_cross_entropy_with_logits(pred,target)
 	dice = dice_loss(pred, target)
-	
 	loss = bce * bce_weight + dice * (1 - bce_weight)  
 	metrics['bce'] += bce.data.cpu().numpy() * target.size(0)
 	metrics['dice'] += dice.data.cpu().numpy() * target.size(0)
@@ -154,10 +159,11 @@ def print_metrics(metrics, epoch_samples, phase):
 		outputs.append("{}: {:4f}".format(k, metrics[k] / epoch_samples))
 	print("{}: {}".format(phase, ", ".join(outputs)))   
 
-def validation(model, optimizer, testLoader, device):
+def validation(model, optimizer, testLoader, device, Criterion):
 	model.eval()
 	metrics = defaultdict(float)
 	size =0
+	vloss =0 
 	with torch.no_grad():
 		for vinput,vlabel in testLoader:
 			vinput = Variable(vinput)
@@ -168,13 +174,13 @@ def validation(model, optimizer, testLoader, device):
 			vlabel = vlabel.type(torch.cuda.FloatTensor)
 			optimizer.zero_grad()
 			vpredict = model(vinput)
-			vloss = calc_loss(vpredict, vlabel, metrics)
+			vloss = calc_loss(vpredict, vlabel, metrics, Criterion)
 			size = size + vinput.size(0)
 	print_metrics(metrics, size, 'val')
 	epoch_loss = metrics['loss']/ size
 	return epoch_loss
 
-def train_model(model, optimizer, dataLoader, testLoader, device):
+def train_model(model, optimizer, dataLoader, testLoader, device, Criterion, scheduler):
 	best_model_wts = copy.deepcopy(model.state_dict())
 	best_loss = 1e10
 	for epoch in range(num_Epochs):
@@ -191,12 +197,13 @@ def train_model(model, optimizer, dataLoader, testLoader, device):
 			optimizer.zero_grad()
 			with torch.set_grad_enabled(True):
 				predict = model(image)
-				loss = calc_loss(predict, target, metrics)
+				loss = calc_loss(predict, target, metrics, Criterion)
 				loss.backward()
 				optimizer.step()
+				scheduler.step()
 				size += image.size(0)
 		print_metrics(metrics, size, 'train')
-		test_loss = validation(model, optimizer, testLoader, device)
+		test_loss = validation(model, optimizer, testLoader, device, Criterion)
 		if test_loss<best_loss:
 			best_loss = test_loss
 			best_model_wts = copy.deepcopy(model.state_dict())
@@ -217,8 +224,48 @@ dataset = SegDataset(test_image, test_mask)
 test = DataLoader(dataset=dataset, batch_size=5, shuffle=True)
 
 # Create Neural Network Model
-base_model= models.resnet18(pretrained = True)
+base_model= models.resnet18(pretrained = False)
 fcn_model = FCN(base_model,1).to(device)
+Criterion = nn.BCELoss()
+# Observe that all parameters are being optimized
+optimizer = optim.SGD(fcn_model.parameters(), lr=0.001, momentum=0.9)
 
-optimizer = optim.Adam(fcn_model.parameters(), lr=1e-4)
-model = train_model(fcn_model, optimizer, train, test, device)
+# Decay LR by a factor of 0.1 every 7 epochs
+exp_lr_scheduler = lr_scheduler.CyclicLR(optimizer, base_lr=0.0001, max_lr=0.1)
+model = train_model(fcn_model, optimizer, train, test, device, Criterion, exp_lr_scheduler)
+
+print('Predictions')
+inputs, targets = next(iter(train))
+inputs = inputs.to(device)
+inputs = inputs.type(torch.cuda.FloatTensor)
+targets = targets.to(device)
+targets = targets.type(torch.cuda.FloatTensor)
+fcn_model.eval()
+prediction = fcn_model(inputs)
+
+inputs = inputs.cpu()
+targets = targets.cpu()
+prediction = prediction.cpu()
+prediction = torch.sigmoid(prediction)
+
+image = inputs[0].numpy()
+image = image/255.0
+for i in range(0,3):
+	image[:,:,i] = (image[:,:,i]-train_mean[i])/train_std[i]
+image = image.transpose((1,2,0))
+
+target = targets[0].numpy().transpose((1,2,0))
+target = target.reshape(224,224)
+prediction = Variable(prediction)
+pred = prediction[0].numpy().transpose((1,2,0))
+pred = pred.reshape(224,224)
+pred[pred >0.5] = 255
+pred[pred <=0.5] = 0
+
+plt.subplot(1,3,1)
+plt.imshow(image)
+plt.subplot(1,3,2)
+plt.imshow(target)
+plt.subplot(1,3,3)
+plt.imshow(pred)
+plt.show()
