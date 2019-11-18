@@ -32,3 +32,4 @@
 9. https://www.learnopencv.com/pytorch-for-beginners-semantic-segmentation-using-torchvision/
 10. https://github.com/usuyama/pytorch-unet
 11. http://www.pabloruizruiz10.com/resources/CNNs/ResNet-PyTorch.html
+12. https://lars76.github.io/neural-networks/object-detection/losses-for-segmentation/
